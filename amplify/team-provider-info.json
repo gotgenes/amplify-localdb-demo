@@ -10,6 +10,11 @@
       "StackName": "amplify-localdb-dev-113629",
       "StackId": "arn:aws:cloudformation:us-west-2:109411978368:stack/amplify-localdb-dev-113629/14b8beb0-2cfa-11eb-ab42-0243f396e563",
       "AmplifyAppId": "d371n0tej9z0ui"
+    },
+    "categories": {
+      "auth": {
+        "localdb669df4cf": {}
+      }
     }
   }
 }
