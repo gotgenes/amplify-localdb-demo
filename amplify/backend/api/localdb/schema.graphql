@@ -1,4 +1,4 @@
-type Message @model {
+type Message @model @auth(rules: [{ allow: private }]) {
   id: ID!
   content: String!
 }
