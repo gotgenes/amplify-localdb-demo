@@ -1,70 +1,153 @@
-# Getting Started with Create React App
+# Amplify Function with DynamoDB Local Demo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a small project to demonstrate connecting a Lambda function to a DynamoDB table generated from a GraphQL model defined using [AWS Amplify](https://aws.amazon.com/amplify/).
+It's purpose is mainly to demonstrate that, presently, this will not work locally using [`amplify mock`](https://docs.amplify.aws/cli/usage/mock).
 
-## Available Scripts
+This project [defines a GraphQL API](amplify/backend/api/localdb/schema.graphql) that has a single entity, `Message`.
+Every message has the properties `ID` and `content`.
+Amplify will generate a `Messages` DynamoDB table from the GraphQL `Message` model.
+This entity is defined as requiring authentication to create, read, update, and list.
+Authentication is provided through Amazon Cognito User Pool.
+(See ["Added a GraphQL API"](#added-a-graphql-api) below.)
 
-In the project directory, you can run:
+This project also [defines a Lambda function](amplify/backend/function/addMessage/src/index.js) `newMessage` that, when invoked, should create a new item in the `Messages` table.
+At the moment, invoking this function when deployed to AWS will have the intended effect.
+When invoking this function locally using `amplify mock`, however, the function will time out, unable to connect to the DynamoDB Local instance.
 
-### `yarn start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## How this repo was created
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+After bootstrapping with `create-react-app` and `amplify init`, here were the following selections of answers for the given steps.
 
-### `yarn test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Added a GraphQL API
 
-### `yarn build`
+```
+❯ amplify add api
+Scanning for plugins...
+Plugin scan successful
+? Please select from one of the below mentioned services: GraphQL
+? Provide API name: localdb
+? Choose the default authorization type for the API Amazon Cognito User Pool
+Using service: Cognito, provided by: awscloudformation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+ The current configured provider is Amazon Cognito.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+ Do you want to use the default authentication and security configuration? Default configuration
+ Warning: you will not be able to edit these selections.
+ How do you want users to be able to sign in? Email
+ Do you want to configure advanced settings? No, I am done.
+Successfully added auth resource localdb669df4cf locally
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Some next steps:
+"amplify push" will build all your local backend resources and provision it in the cloud
+"amplify publish" will build all your local backend and frontend resources (if you have hosting category added) and provision it in the cloud
 
-### `yarn eject`
+? Do you want to configure advanced settings for the GraphQL API No, I am done.
+? Do you have an annotated GraphQL schema? No
+? Choose a schema template: Single object with fields (e.g., “Todo” with ID, name, description)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The following types do not have '@auth' enabled. Consider using @auth with @model
+	- Todo
+Learn more about @auth here: https://docs.amplify.aws/cli/graphql-transformer/directives#auth
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+GraphQL schema compiled successfully.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Edit your schema at /Users/chris/development/amplify-localdb-demo/amplify/backend/api/localdb/schema.graphql or place .graphql files in a directory at /Users/chris/development/amplify-localdb-demo/amplify/backend/api/localdb/schema
+? Do you want to edit the schema now? No
+Successfully added resource localdb locally
 
-## Learn More
+Some next steps:
+"amplify push" will build all your local backend resources and provision it in the cloud
+"amplify publish" will build all your local backend and frontend resources (if you have hosting category added) and provision it in the cloud
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Add a function with
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+❯ amplify add function
+? Select which capability you want to add: Lambda function (serverless function)
+? Provide an AWS Lambda function name: addMessage
+? Choose the runtime that you want to use: NodeJS
+? Choose the function template that you want to use: Hello World
 
-### Code Splitting
+Available advanced settings:
+- Resource access permissions
+- Scheduled recurring invocation
+- Lambda layers configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+? Do you want to configure advanced settings? Yes
+? Do you want to access other resources in this project from your Lambda function? Yes
+? Select the category storage
+Storage category has a resource called Message:@model(appsync)
+? Select the operations you want to permit for Message:@model(appsync) create
 
-### Analyzing the Bundle Size
+You can access the following resource attributes as environment variables from your Lambda function
+	API_LOCALDB_GRAPHQLAPIIDOUTPUT
+	API_LOCALDB_MESSAGETABLE_ARN
+	API_LOCALDB_MESSAGETABLE_NAME
+	ENV
+	REGION
+? Do you want to invoke this function on a recurring schedule? No
+? Do you want to configure Lambda layers for this function? No
+? Do you want to edit the local lambda function now? No
+Successfully added resource addMessage locally.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Next steps:
+Check out sample function code generated in <project-dir>/amplify/backend/function/addMessage/src
+"amplify function build" builds all of your functions currently in the project
+"amplify mock function <functionName>" runs your function locally
+"amplify push" builds all of your local backend resources and provisions them in the cloud
+"amplify publish" builds all of your local backend and front-end resources (if you added hosting category) and provisions them in the cloud
+```
 
-### Making a Progressive Web App
+## Running locally with amplify mock
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Start the API mock
 
-### Advanced Configuration
+You will need to start the API mock service in order to have a running DynamoDB Local instance.
+This will create a `Messages` table (although the actual table name will probably have a randomized string appendend to the name).
+Our Lambda will attempt to write a message to the `Messages` table set up through this step.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+From a shell, start the API mock service with
+```
+amplify mock api
+```
 
-### Deployment
+Note that this will occupy the shell's session; you will need to leave this running while trying to run the Lambda function (described below) in a new shell.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `yarn build` fails to minify
+### Run the Lambda function
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+From a separate shell, run the Lambda function locally with
+
+```
+amplify mock function addMessage
+```
+
+You will be prompted to provide an event JSON object:
+```
+? Provide the path to the event JSON object relative to /Users/chri
+s/development/amplify-localdb-demo/amplify/backend/function/addMess
+age (src/event.json)
+```
+
+Hit <kbd>Enter</kbd> to use the default (`src/event.json`).
+(The actual content does not matter, other than needing to be a valid JSON object.)
+
+Note that presently we expect this to fail, with `addMessage` unable to connect to the DynamoDB Local instance set up by `amplify mock api` in the step above.
+You should see an error like the following:
+
+```
+addMessage failed with the following error:
+Error: Lambda execution timed out after 10 seconds. Press ctrl + C to exit the process.
+    To increase the lambda timeout use the --timeout parameter to set a value in seconds.
+    Note that the maximum Lambda execution time is 15 minutes:
+    https://aws.amazon.com/about-aws/whats-new/2018/10/aws-lambda-supports-functions-that-can-run-up-to-15-minutes/
+
+    at Timeout._onTimeout (/Users/chris/.nodenv/versions/14.15.1/lib/node_modules/@aws-amplify/cli/node_modules/amplify-util-mock/lib/func/index.js:94:63)
+    at listOnTimeout (internal/timers.js:554:17)
+    at processTimers (internal/timers.js:497:7)
+Finished execution.
+```
