@@ -63,7 +63,7 @@ Some next steps:
 "amplify publish" will build all your local backend and frontend resources (if you have hosting category added) and provision it in the cloud
 ```
 
-### Add a function with
+### Added a function with
 
 ```
 ❯ amplify add function
