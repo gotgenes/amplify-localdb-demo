@@ -1,7 +1,7 @@
 # Amplify Function with DynamoDB Local Demo
 
 This is a small project to demonstrate connecting a Lambda function to a DynamoDB table generated from a GraphQL model defined using [AWS Amplify](https://aws.amazon.com/amplify/).
-It's purpose is mainly to demonstrate that, presently, this will not work locally using [`amplify mock`](https://docs.amplify.aws/cli/usage/mock).
+It's purpose is mainly to demonstrate how to make this work locally using [`amplify mock`](https://docs.amplify.aws/cli/usage/mock).
 
 This project [defines a GraphQL API](amplify/backend/api/localdb/schema.graphql) that has a single entity, `Message`.
 Every message has the properties `ID` and `content`.
@@ -10,9 +10,10 @@ This entity is defined as requiring authentication to create, read, update, and 
 Authentication is provided through Amazon Cognito User Pool.
 (See ["Added a GraphQL API"](#added-a-graphql-api) below.)
 
-This project also [defines a Lambda function](amplify/backend/function/addMessage/src/index.js) `newMessage` that, when invoked, should create a new item in the `Messages` table.
-At the moment, invoking this function when deployed to AWS will have the intended effect.
-When invoking this function locally using `amplify mock`, however, the function will time out, unable to connect to the DynamoDB Local instance.
+This project also [defines a Lambda function](amplify/backend/function/addMessage/src/index.js) `addMessage` that, when invoked, should create a new item in the `Messages` table.
+Locally, `addMessage` will put the message in the `Messages` table in the mocked DynamoDB.
+This was set up through the use of a [`.env` file](amplify/backend/function/addMessage/.env).
+The [amplify documentation on `amplify mock`](https://docs.amplify.aws/cli/usage/mock#function-mock-environment-variables) provides instructions for the values that should be defined in this `.env` file.
 
 
 ## How this repo was created
@@ -111,6 +112,7 @@ This will create a `Messages` table (although the actual table name will probabl
 Our Lambda will attempt to write a message to the `Messages` table set up through this step.
 
 From a shell, start the API mock service with
+
 ```
 amplify mock api
 ```
@@ -128,26 +130,20 @@ amplify mock function addMessage
 
 You will be prompted to provide an event JSON object:
 ```
-? Provide the path to the event JSON object relative to /Users/chri
-s/development/amplify-localdb-demo/amplify/backend/function/addMess
-age (src/event.json)
+? Provide the path to the event JSON object relative to <repo_root>/amplify/backend/function/addMessage (src/event.json)
 ```
 
 Hit <kbd>Enter</kbd> to use the default (`src/event.json`).
 (The actual content does not matter, other than needing to be a valid JSON object.)
 
-Note that presently we expect this to fail, with `addMessage` unable to connect to the DynamoDB Local instance set up by `amplify mock api` in the step above.
-You should see an error like the following:
+You should see a success message like the following:
 
 ```
-addMessage failed with the following error:
-Error: Lambda execution timed out after 10 seconds. Press ctrl + C to exit the process.
-    To increase the lambda timeout use the --timeout parameter to set a value in seconds.
-    Note that the maximum Lambda execution time is 15 minutes:
-    https://aws.amazon.com/about-aws/whats-new/2018/10/aws-lambda-supports-functions-that-can-run-up-to-15-minutes/
-
-    at Timeout._onTimeout (/Users/chris/.nodenv/versions/14.15.1/lib/node_modules/@aws-amplify/cli/node_modules/amplify-util-mock/lib/func/index.js:94:63)
-    at listOnTimeout (internal/timers.js:554:17)
-    at processTimers (internal/timers.js:497:7)
+Ensuring latest function changes are built...
+Starting execution...
+Result:
+{
+  "body": "Successfully created item!"
+}
 Finished execution.
 ```

@@ -9,7 +9,9 @@ Amplify Params - DO NOT EDIT */
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
 
-const docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient({
+  endpoint: process.env.DDB_ENDPOINT
+});
 
 const params = {
   TableName: process.env.API_LOCALDB_MESSAGETABLE_NAME,

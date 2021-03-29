@@ -1,19 +1,25 @@
 {
-  "dev": {
+  "localdb": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-localdb-dev-113629-authRole",
-      "UnauthRoleArn": "arn:aws:iam::109411978368:role/amplify-localdb-dev-113629-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::109411978368:role/amplify-localdb-dev-113629-authRole",
+      "AuthRoleName": "amplify-localdb-localdb-193029-authRole",
+      "UnauthRoleArn": "arn:aws:iam::109411978368:role/amplify-localdb-localdb-193029-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::109411978368:role/amplify-localdb-localdb-193029-authRole",
       "Region": "us-west-2",
-      "DeploymentBucketName": "amplify-localdb-dev-113629-deployment",
-      "UnauthRoleName": "amplify-localdb-dev-113629-unauthRole",
-      "StackName": "amplify-localdb-dev-113629",
-      "StackId": "arn:aws:cloudformation:us-west-2:109411978368:stack/amplify-localdb-dev-113629/14b8beb0-2cfa-11eb-ab42-0243f396e563",
-      "AmplifyAppId": "d371n0tej9z0ui"
+      "DeploymentBucketName": "amplify-localdb-localdb-193029-deployment",
+      "UnauthRoleName": "amplify-localdb-localdb-193029-unauthRole",
+      "StackName": "amplify-localdb-localdb-193029",
+      "StackId": "arn:aws:cloudformation:us-west-2:109411978368:stack/amplify-localdb-localdb-193029/925519b0-8f6d-11eb-bdaa-06b06ae60541",
+      "AmplifyAppId": "d35tbdk5b28jzg"
     },
     "categories": {
       "auth": {
         "localdb669df4cf": {}
+      },
+      "function": {
+        "addMessage": {
+          "deploymentBucketName": "amplify-localdb-localdb-193029-deployment",
+          "s3Key": "amplify-builds/addMessage-444f6d2b626571777856-build.zip"
+        }
       }
     }
   }
